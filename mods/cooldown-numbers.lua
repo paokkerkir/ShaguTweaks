@@ -82,6 +82,9 @@ local function SetCooldown(this, start, duration, enable)
   -- add support for omnicc's disable flag
   if this.noCooldownCount then return end
 
+  -- skip ShaguPlates-owned frames (nameplates etc.)
+  if this.pfCooldownType then return end
+
   -- don't draw global cooldowns
   if not duration or duration < 2 then
     -- hide if already existing
