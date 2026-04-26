@@ -63,12 +63,12 @@ module.enable = function(self)
       end
 
       if cur == percent and strfind(sb:GetName(), "Health") then
-        string:SetText(percent .. "%")
-      elseif sb:GetName() == "TargetFrameHealthBar" and cur < max then
-        string:SetText(Abbreviate(cur) .. " - " .. percent .. "%")
-      else
-        string:SetText(Abbreviate(cur))
-      end
+		string:SetText(percent .. "/" .. percent)
+	  elseif sb:GetName() == "TargetFrameHealthBar" and cur < max then
+		string:SetText(Abbreviate(cur) .. "/" .. Abbreviate(max) .. " - " .. percent .. "%")
+	  else
+		string:SetText(Abbreviate(cur) .. "/" .. Abbreviate(max))
+	  end
 
       if max == 0 then
         string:Hide()

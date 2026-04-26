@@ -44,7 +44,11 @@ local blacklist = {
 
 local regionskips = {
   -- colorpicker gradient
-  ["ColorPickerFrame"] = { [15] = true }
+  ["ColorPickerFrame"] = { [15] = true },
+  -- EQL3: background art tiles on the main frame - BookIcon(1), TopLeft(2), Top_Switch_Off(3), BottomLeft(4), Bottom_Switch_Off(5), Top_Switch_On(6), Bottom_Switch_On(7)
+  ["EQL3_QuestLogFrame"] = { [1]=true, [2]=true, [3]=true, [4]=true, [5]=true, [6]=true, [7]=true },
+  -- EQL3: parchment tiles on the description panel - TopMiddle(1), TopRight(2), BottomMiddle(3), BottomRight(4)
+  ["EQL3_QuestLogFrame_Description"] = { [1]=true, [2]=true, [3]=true, [4]=true },
 }
 
 local backgrounds = {
