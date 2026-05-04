@@ -76,7 +76,6 @@ mods\worldmap-colors.lua
 mods\unitframes-bighealth.lua
 mods\unitframes-classportrait.lua
 mods\cooldown-numbers.lua
-mods\newmap.lua
 mods\turtle-wow.lua
 mods\superwow.lua
 mods\reduced-actionbar.lua
