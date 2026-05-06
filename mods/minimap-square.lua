@@ -7,10 +7,16 @@ local module = ShaguTweaks:register({
   expansions = { ["vanilla"] = true, ["tbc"] = true },
   category = T["World & MiniMap"],
   enabled = nil,
+  config = {
+    ["minimap.size"] = 144,
+  },
 })
 
 module.enable = function(self)
+  local size = module.config["minimap.size"]
   MinimapBorder:SetTexture(nil)
+  Minimap:SetWidth(size)
+  Minimap:SetHeight(size)
   Minimap:SetPoint("CENTER", MinimapCluster, "TOP", 9, -98)
   Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
 
