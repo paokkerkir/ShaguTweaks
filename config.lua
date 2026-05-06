@@ -70,13 +70,26 @@ settings.okay:SetScript("OnClick", function()
 
   -- save temporary config to real config
   for k, v in pairs(current_config) do
-    -- check if reload is required
-    if current_config[k] ~= ShaguTweaks_config[k] then
-      reload = true
-    end
+    if k ~= "overwrites" then
+      -- check if reload is required
+      if current_config[k] ~= ShaguTweaks_config[k] then
+        reload = true
+      end
 
-    -- set new config
-    ShaguTweaks_config[k] = v
+      -- set new config
+      ShaguTweaks_config[k] = v
+    end
+  end
+
+  -- save slider overwrite values
+  if current_config.overwrites then
+    ShaguTweaks_config.overwrites = ShaguTweaks_config.overwrites or {}
+    for k, v in pairs(current_config.overwrites) do
+      if ShaguTweaks_config.overwrites[k] ~= v then
+        reload = true
+      end
+      ShaguTweaks_config.overwrites[k] = v
+    end
   end
 
   -- reload the UI if required
@@ -260,6 +273,53 @@ settings.load = function(self)
       entry = entry + 1
     end
 
+    -- render sliders declared by modules in this category
+    local sliderHeight = 36
+    for title, smod in ShaguTweaks.spairs(entries) do
+      if smod.sliders then
+        for sidx, sdef in ipairs(smod.sliders) do
+          local sliderKey = "slider:" .. sdef.key
+          local safeName = "AdvancedSettingsGUISlider" .. string.gsub(sdef.key, "[^%w]", "_")
+
+          if not settings.entries[sliderKey] then
+            settings.entries[sliderKey] = CreateFrame("Slider", safeName, settings.category[category], "OptionsSliderTemplate")
+          end
+
+          local slider = settings.entries[sliderKey]
+          settings.category[category].buttons[slider] = true
+
+          local yOffset = -(height + spacing / 2 + 4 + (sidx - 1) * sliderHeight)
+          slider:SetWidth(max_width - 90)
+          slider:SetPoint("TOPLEFT", settings.category[category], "TOPLEFT", 17, yOffset)
+          slider:SetMinMaxValues(sdef.min, sdef.max)
+          slider:SetValueStep(sdef.step or 1)
+
+          local curVal = (current_config.overwrites and current_config.overwrites[sdef.key])
+            or (ShaguTweaks_config.overwrites and ShaguTweaks_config.overwrites[sdef.key])
+            or sdef.default or sdef.min
+
+          local labelText = sdef.label or sdef.key
+          local titleLabel = _G[safeName .. "Text"]
+          local lowLabel   = _G[safeName .. "Low"]
+          local highLabel  = _G[safeName .. "High"]
+          if lowLabel   then lowLabel:SetText(sdef.min) end
+          if highLabel  then highLabel:SetText(sdef.max) end
+          if titleLabel then titleLabel:SetText(labelText .. ": " .. curVal) end
+
+          local key = sdef.key
+          slider:SetScript("OnValueChanged", function()
+            local val = math.floor(this:GetValue() + 0.5)
+            if titleLabel then titleLabel:SetText(labelText .. ": " .. val) end
+            current_config.overwrites = current_config.overwrites or {}
+            current_config.overwrites[key] = val
+          end)
+          slider:SetValue(curVal)
+
+          height = height + sliderHeight
+        end
+      end
+    end
+
     collapse(settings.category[category], true)
 
     height = height + spacing
@@ -297,6 +357,16 @@ settings.defaults = function()
     current_config[title] = mod.enabled and 1 or 0
   end
 
+  -- reset slider overwrite values to module defaults
+  current_config.overwrites = {}
+  for title, mod in pairs(ShaguTweaks.mods) do
+    if mod.config then
+      for k, v in pairs(mod.config) do
+        current_config.overwrites[k] = v
+      end
+    end
+  end
+
   settings:load()
 end
 
@@ -304,6 +374,11 @@ settings:SetScript("OnShow", function()
   -- read current config to temporary config
   for k, v in pairs(ShaguTweaks_config) do
     current_config[k] = v
+  end
+  -- copy overwrites into a separate table so Cancel discards slider changes
+  current_config.overwrites = {}
+  for k, v in pairs(ShaguTweaks_config.overwrites or {}) do
+    current_config.overwrites[k] = v
   end
 
   settings:load()

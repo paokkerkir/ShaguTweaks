@@ -7,9 +7,19 @@ local module = ShaguTweaks:register({
   expansions = { ["vanilla"] = true, ["tbc"] = true },
   category = T["World & MiniMap"],
   enabled = true,
+  config = {
+    ["minimap.size"] = 144,
+  },
+  sliders = {
+    { key = "minimap.size", label = "Minimap Size", min = 100, max = 250, step = 1, default = 144 },
+  },
 })
 
 module.enable = function(self)
+  local size = module.config["minimap.size"]
+  Minimap:SetWidth(size)
+  Minimap:SetHeight(size)
+
   -- hide daytime circle
   GameTimeFrame:Hide()
   GameTimeFrame:SetScript("OnShow", function() this:Hide() end)
