@@ -288,7 +288,7 @@ settings.load = function(self)
           local slider = settings.entries[sliderKey]
           settings.category[category].buttons[slider] = true
 
-          local yOffset = -(height + spacing / 2 + 4 + (sidx - 1) * sliderHeight)
+          local yOffset = -(height + spacing / 2 + 16 + (sidx - 1) * sliderHeight)
           slider:SetWidth(max_width - 90)
           slider:SetPoint("TOPLEFT", settings.category[category], "TOPLEFT", 17, yOffset)
           slider:SetMinMaxValues(sdef.min, sdef.max)
